@@ -1,0 +1,10 @@
+<!--- Copyright 2010 Imagineering Internet Inc. (imagineer.ca) and Jordan Clark (jclark@imagineeringstuido.com). All rights reserved.
+Use of source and redistribution, with or without modification, are prohibited without prior written consent. --->
+
+<cfparam name="arguments.stateList" type="string" default="AL,AK,AZ,AR,CA,CO,CT,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,DC,WV,WI,WY,AA,AE,AP,AS,FM,GU,MH,MP,PR,PW,VI">
+
+<cfif NOT listFindNoCase( arguments.stateList, LOCAL.value )>
+	<cfset LOCAL.value = "">
+	<cfset LOCAL.error = "{label} is not a valid state.">
+</cfif>
+

@@ -211,11 +211,11 @@ component {
 		,	errorScope= ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope )
 		,	scope= ( isSimpleValue( arguments.scope ) ? evaluate( arguments.scope ) : arguments.scope )
 		});
-		//  apply magic rules 
+		// apply magic rules 
 		for ( LOCAL.rule in listToArray( arguments.rules, "," ) ) {
 			if ( structKeyExists( this.magicRules, LOCAL.rule ) ) {
 				var mRule= this.magicRules[ listFirst( LOCAL.rule, ':' ) ];
-				//  apply extra args 
+				// apply extra args 
 				structAppend( arguments, mRule, true );
 				LOCAL.rulesList= listAppend( LOCAL.rulesList, mRule.rules );
 				LOCAL.rulesList= listRemoveDuplicates( LOCAL.rulesList, ",", true );
@@ -223,14 +223,14 @@ component {
 				LOCAL.rulesList= listAppend( LOCAL.rulesList, LOCAL.rule );
 			}
 		}
-		//  test rules 
+		// test rules 
 		for ( LOCAL.rule in listToArray( LOCAL.rulesList, "," ) ) {
 			LOCAL.error= "";
 			LOCAL.ruleArg= listRest( LOCAL.rule, ':' );
 			LOCAL.file= this.rulePath( LOCAL.rule );
 			include LOCAL.file;
 			if ( LOCAL.error == "stop" ) {
-				//  stop processing but don't throw an error 
+				// stop processing but don't throw an error 
 				break;
 			} else if ( len( LOCAL.error ) ) {
 				if ( arguments.defaultOnError ) {
@@ -242,17 +242,17 @@ component {
 					this.debugLog( "Failed #arguments.var# '#LOCAL.rule#': #replace( LOCAL.error, '{label}', '', 'all' )# [#LOCAL.value#]" );
 				}
 				LOCAL.isValid= false;
-				//  global error message 
+				// global error message 
 				if ( structKeyExists( arguments, "error" ) && len( arguments.error ) ) {
 					LOCAL.error= arguments.error;
 				}
-				//  build the error msg 
+				// build the error msg 
 				LOCAL.errorMsg= this.formatErrorMessage( LOCAL.error, arguments.label, arguments.errorClass, arguments.link, arguments.var );
-				//  prepend the existing error if there is one 
+				// prepend the existing error if there is one 
 				if ( structKeyExists( LOCAL.errorScope, arguments.var ) ) {
 					LOCAL.errorMsg= LOCAL.errorScope[ arguments.var ] & chr( 10 ) & LOCAL.errorMsg;
 				}
-				//  store the error, or append it to an existing one 
+				// store the error, or append it to an existing one 
 				LOCAL.errorScope[ arguments.var ]= LOCAL.errorMsg;
 				if ( arguments.throwable ) {
 					if ( arguments.mutable ) {
@@ -260,7 +260,7 @@ component {
 					}
 					throw( message= LOCAL.errorMsg, detail= LOCAL.error, type= "Custom.Input.Validation" );
 				}
-				//  end the loop 
+				// end the loop 
 				break;
 			}
 		}
@@ -271,7 +271,7 @@ component {
 				this.debugLog( "Passed #arguments.var# '#LOCAL.rulesList#'" );
 			}
 		}
-		//  update value incase rule updated directly 
+		// update value incase rule updated directly 
 		if ( arguments.mutable ) {
 			LOCAL.scope[ arguments.var ]= LOCAL.value;
 		}
@@ -353,9 +353,9 @@ component {
 		return arguments.message;
 	}
 	
-	//  ----------------------------------------------------- 
-	//  FORM SCOPE 
-	//  ----------------------------------------------------- 
+	// ----------------------------------------------------- 
+	// FORM SCOPE 
+	// ----------------------------------------------------- 
 
 	function formSubmitted(
 		string var= "submit"
@@ -531,9 +531,9 @@ component {
 		return this.validate( argumentCollection= arguments );
 	}
 
-	//  ----------------------------------------------------- 
-	//  URL SCOPE 
-	//  ----------------------------------------------------- 
+	// ----------------------------------------------------- 
+	// URL SCOPE 
+	// ----------------------------------------------------- 
 
 	boolean function isUrlValid(
 		required string var
@@ -640,9 +640,9 @@ component {
 		return this.validate( argumentCollection= arguments );
 	}
 
-	//  ----------------------------------------------------- 
-	//  COOKIE SCOPE 
-	//  ----------------------------------------------------- 
+	// ----------------------------------------------------- 
+	// COOKIE SCOPE 
+	// ----------------------------------------------------- 
 
 	boolean function isCookieValid(required string var
 	,	string rules= ""

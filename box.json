@@ -1,14 +1,14 @@
 {
     "name":"cfvalid",
     "slug":"cfvalid",
-    "version":"0.5.1",
+    "version":"0.5.2",
     "author":"Jordan Clark <jordanclark@gmail.com>",
     "keywords":[
         "input validation"
     ],
     "shortDescription":"Input validation made awesome",
     "type":"modules",
-    "location":"jordanclark/cfvalid#v0.5.1",
+    "location":"jordanclark/cfvalid#v0.5.2",
     "repository":{
         "URL":"https://github.com/jordanclark/cfvalid.git",
         "type":"GIT"

@@ -19,7 +19,7 @@ Use of source and redistribution, with or without modification, are prohibited w
 		<!--- <cfset LOCAL.value = dateFormat( LOCAL.value, "YYYYMMDD" )> --->
 		<cfcatch>
 			<cfset LOCAL.value = "">
-			<cfset LOCAL.error = "{label} " & cfcatch.message>
+			<cfset LOCAL.error = "{label} " & (cfcatch.message?:"No catch message")>
 		</cfcatch>
 	</cftry>
 </cfif>

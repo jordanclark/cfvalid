@@ -1,6 +1,3 @@
-<!--- Copyright 2010 Imagineering Internet Inc. (imagineer.ca) and Jordan Clark (jclark@imagineeringstuido.com). All rights reserved.
-Use of source and redistribution, with or without modification, are prohibited without prior written consent. --->
-
 <cfparam name="arguments.contains" type="string" default="#LOCAL.ruleArg#">
 <cfparam name="arguments.caseSensitive" type="boolean" default="false">
 <!--- <cfparam name="arguments.containsReplace" type="string"> --->

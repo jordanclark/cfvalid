@@ -618,7 +618,8 @@ component {
 		return;
 	}
 
-	function urlValidate(required string var
+	function urlValidate(
+		required string var
 	,	string label= arguments.var
 	,	string rules= ""
 	,	default= this.defaults.default
@@ -644,7 +645,8 @@ component {
 	// COOKIE SCOPE 
 	// ----------------------------------------------------- 
 
-	boolean function isCookieValid(required string var
+	boolean function isCookieValid(
+		required string var
 	,	string rules= ""
 	,	default= ""
 	,	boolean required= true

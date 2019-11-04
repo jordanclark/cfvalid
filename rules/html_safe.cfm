@@ -1,4 +1,4 @@
-<cfif arguments.autoFix AND arguments.mutable>
+<cfif len( LOCAL.value ) AND arguments.autoFix AND arguments.mutable>
 	<cfset LOCAL.value = reReplaceNoCase( LOCAL.value, "<[/!]?(object|embed|script|applet|meta|link|frame|frameset|iframe)[^>]*>", "", "all" )>
 </cfif>
 

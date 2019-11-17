@@ -141,9 +141,9 @@ component {
 	,	boolean throwable= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -165,9 +165,9 @@ component {
 	,	boolean throwable= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -421,10 +421,10 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		arguments.scope= "FORM";
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -447,10 +447,10 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		arguments.scope= "FORM";
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -482,12 +482,12 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		var standardDefault= arguments.default;
 		arguments.hasQuery= ( structKeyExists( arguments, "query" ) && arguments.query.recordCount );
 		arguments.scope= "FORM";
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -571,10 +571,10 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		arguments.scope= "URL";
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -597,10 +597,10 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		arguments.scope= "URL";
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -681,13 +681,13 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		if ( !arguments.required ) {
 			arguments.validVar= "";
 		}
 		arguments.scope= "COOKIE";
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -707,13 +707,13 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
+	,	struct errorScope= {}
 	) {
 		if ( !arguments.required ) {
 			arguments.validVar= "";
 		}
 		arguments.scope= "COOKIE";
 		arguments.throwable= false;
-		arguments.errorScope= {};
 		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}

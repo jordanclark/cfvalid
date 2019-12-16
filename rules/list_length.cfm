@@ -42,3 +42,11 @@
 	>
 </cfif>
 
+<cfif len( LOCAL.error ) AND arguments.mutable AND len( arguments.listMin ) AND LOCAL.length GT arguments.listMax>
+	<cfscript>
+		while( LOCAL.length > arguments.listMax ) {
+			LOCAL.value = listDeleteAt( LOCAL.value, LOCAL.length+1, arguments.delimiters );
+			LOCAL.length -= 1;
+		}
+	</cfscript>
+</cfif>

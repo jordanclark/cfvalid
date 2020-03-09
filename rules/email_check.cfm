@@ -1,5 +1,5 @@
 
-<cfset LOCAL.emailCheck = BOOT.service( "email" ).emailCheck( LOCAL.value )>
+<cfset LOCAL.emailCheck = app.service( "email" ).emailCheck( LOCAL.value )>
 <cfset request.log( "email check!!" )>
 <cfset request.log( LOCAL.emailCheck )>
 

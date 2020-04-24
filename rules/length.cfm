@@ -33,6 +33,11 @@
 
 <cfset LOCAL.len = len( LOCAL.value )>
 
+<cfif arguments.autoFix AND arguments.mutable AND len( arguments.max ) AND LOCAL.len GT arguments.max>
+	<cfset LOCAL.value = left( LOCAL.value, arguments.max )>
+	<cfset LOCAL.len = len( LOCAL.value )>
+</cfif>
+
 <cfif len( arguments.max ) AND len( arguments.min )>
 	<cfif LOCAL.len GT arguments.max OR LOCAL.len LT arguments.min>
 		<cfif arguments.mutable>

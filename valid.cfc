@@ -34,8 +34,8 @@ component {
 	}
 
 	function debugLog(required input) {
-		if ( structKeyExists( request, "log" ) && isCustomFunction( request.log ) ) {
-			if ( isSimpleValue( arguments.input ) ) {
+		if( structKeyExists( request, "log" ) && isCustomFunction( request.log ) ) {
+			if( isSimpleValue( arguments.input ) ) {
 				request.log( "valid.cfc: " & arguments.input );
 			} else {
 				request.log( "valid.cfc: (complex type)" );
@@ -55,19 +55,18 @@ component {
 	string function rulePath(required string name) {
 		arguments.name= listFirst( arguments.name, ":" );
 		var found= "";
-		if ( structKeyExists( this.pathCache, arguments.name ) ) {
+		if( structKeyExists( this.pathCache, arguments.name ) ) {
 			found= this.pathCache[ arguments.name ];
 		} else {
-			var path= "";
-			for ( path in listToArray( this.rulePaths, ";" ) ) {
-				if ( fileExists( expandPath( "#path#/#arguments.name#.cfm" ) ) ) {
+			for( var path in listToArray( this.rulePaths, ";" ) ) {
+				if( fileExists( expandPath( "#path#/#arguments.name#.cfm" ) ) ) {
 					found= "#path#/#arguments.name#.cfm";
 					this.pathCache[ arguments.name ]= found;
 					break;
 				}
 			}
 		}
-		if ( !len( found ) ) {
+		if( !len( found ) ) {
 			throw( message= "Couldn't find validation rule #arguments.name#", type= "#this.throwType#.RuleMissing" );
 		}
 		return found;
@@ -75,11 +74,11 @@ component {
 
 	boolean function anyErrors(string validVar= this.defaults.validVar, errorScope= this.defaults.errorScope) {
 		LOCAL.bError= false;
-		if ( len( arguments.validVar ) && evaluate( arguments.validVar ) == false ) {
+		if( len( arguments.validVar ) && evaluate( arguments.validVar ) == false ) {
 			LOCAL.bError= true;
-		} else if ( len( arguments.errorScope ) ) {
+		} else if( len( arguments.errorScope ) ) {
 			LOCAL.errorScope= ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope );
-			if ( isStruct( LOCAL.errorScope ) && !structIsEmpty( LOCAL.errorScope ) ) {
+			if( isStruct( LOCAL.errorScope ) && !structIsEmpty( LOCAL.errorScope ) ) {
 				LOCAL.bError= true;
 			}
 		}
@@ -89,8 +88,8 @@ component {
 	boolean function hadError(required string vars, errorScope= this.defaults.errorScope) {
 		LOCAL.bError= false;
 		LOCAL.errorScope= ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope );
-		for ( LOCAL.var in listToArray( arguments.vars, ",; " ) ) {
-			if ( structKeyExists( LOCAL.errorScope, LOCAL.var ) ) {
+		for( LOCAL.var in listToArray( arguments.vars, ",; " ) ) {
+			if( structKeyExists( LOCAL.errorScope, LOCAL.var ) ) {
 				LOCAL.bError= true;
 				break;
 			}
@@ -149,7 +148,7 @@ component {
 	,	struct errorScope= {}
 	) {
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
 		var v= this.validate( argumentCollection= arguments );
@@ -173,11 +172,11 @@ component {
 	,	struct errorScope= {}
 	) {
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
-		if ( find( ",", arguments.vars ) ) {
-			for ( arguments.var in listToArray( arguments.vars, ",;" ) ) {
+		if( find( ",", arguments.vars ) ) {
+			for( arguments.var in listToArray( arguments.vars, ",;" ) ) {
 				this.validate( argumentCollection= arguments );
 			}
 		} else {
@@ -218,12 +217,15 @@ component {
 		});
 		if( isStruct( arguments.errorScope ) ) {
 			LOCAL.errorScope= arguments.errorScope;
-		} else if( isSimpleValue( arguments.errorScope ) && len( arguments.errorScope ) && isDefined( arguments.errorScope ) ) {
+		} else if( isSimpleValue( arguments.errorScope ) && len( arguments.errorScope ) ) {
+			if( !isDefined( arguments.errorScope ) ) {
+				"#arguments.errorScope#"= {};
+			}
 			LOCAL.errorScope= evaluate( arguments.errorScope );
 		}
 		// apply magic rules 
-		for ( LOCAL.rule in listToArray( arguments.rules, "," ) ) {
-			if ( structKeyExists( this.magicRules, LOCAL.rule ) ) {
+		for( LOCAL.rule in listToArray( arguments.rules, "," ) ) {
+			if( structKeyExists( this.magicRules, LOCAL.rule ) ) {
 				var mRule= this.magicRules[ listFirst( LOCAL.rule, ':' ) ];
 				// apply extra args 
 				structAppend( arguments, mRule, true );
@@ -234,38 +236,38 @@ component {
 			}
 		}
 		// test rules 
-		for ( LOCAL.rule in listToArray( LOCAL.rulesList, "," ) ) {
+		for( LOCAL.rule in listToArray( LOCAL.rulesList, "," ) ) {
 			LOCAL.error= "";
 			LOCAL.ruleArg= listRest( LOCAL.rule, ':' );
 			LOCAL.file= this.rulePath( LOCAL.rule );
 			include LOCAL.file;
-			if ( LOCAL.error == "stop" ) {
+			if( LOCAL.error == "stop" ) {
 				// stop processing but don't throw an error 
 				break;
-			} else if ( len( LOCAL.error ) ) {
-				if ( arguments.defaultOnError ) {
+			} else if( len( LOCAL.error ) ) {
+				if( arguments.defaultOnError ) {
 					LOCAL.value= arguments.defaultValue;
 				}
-				if ( isNull( LOCAL.value ) || !isSimpleValue( LOCAL.value ) ) {
+				if( isNull( LOCAL.value ) || !isSimpleValue( LOCAL.value ) ) {
 					this.debugLog( "Failed #arguments.var# '#LOCAL.rule#': #replace( LOCAL.error, '{label}', '', 'all' )# [null/complex]" );
 				} else {
 					this.debugLog( "Failed #arguments.var# '#LOCAL.rule#': #replace( LOCAL.error, '{label}', '', 'all' )# [#LOCAL.value#]" );
 				}
 				LOCAL.isValid= false;
 				// global error message 
-				if ( structKeyExists( arguments, "error" ) && len( arguments.error ) ) {
+				if( structKeyExists( arguments, "error" ) && len( arguments.error ) ) {
 					LOCAL.error= arguments.error;
 				}
 				// build the error msg 
 				LOCAL.errorMsg= this.formatErrorMessage( LOCAL.error, arguments.label, arguments.errorClass, arguments.link, arguments.var );
 				// prepend the existing error if there is one 
-				if ( structKeyExists( LOCAL.errorScope, arguments.var ) ) {
+				if( structKeyExists( LOCAL.errorScope, arguments.var ) ) {
 					LOCAL.errorMsg= LOCAL.errorScope[ arguments.var ] & chr( 10 ) & LOCAL.errorMsg;
 				}
 				// store the error, or append it to an existing one 
 				LOCAL.errorScope[ arguments.var ]= LOCAL.errorMsg;
-				if ( arguments.throwable ) {
-					if ( arguments.mutable ) {
+				if( arguments.throwable ) {
+					if( arguments.mutable ) {
 						LOCAL.scope[ arguments.var ]= LOCAL.value;
 					}
 					throw( message= LOCAL.errorMsg, detail= LOCAL.error, type= "Custom.Input.Validation" );
@@ -274,18 +276,18 @@ component {
 				break;
 			}
 		}
-		if ( LOCAL.isValid ) {
-			if ( isSimpleValue( arguments.scope ) ) {
+		if( LOCAL.isValid ) {
+			if( isSimpleValue( arguments.scope ) ) {
 				this.debugLog( "Passed #lCase( arguments.scope )#.#arguments.var# '#LOCAL.rulesList#'" );
 			} else {
 				this.debugLog( "Passed #arguments.var# '#LOCAL.rulesList#'" );
 			}
 		}
 		// update value incase rule updated directly 
-		if ( arguments.mutable ) {
+		if( arguments.mutable ) {
 			LOCAL.scope[ arguments.var ]= LOCAL.value;
 		}
-		if ( !LOCAL.isValid && len( arguments.validVar ) ) {
+		if( !LOCAL.isValid && len( arguments.validVar ) ) {
 			"#arguments.validVar#"= false;
 			this.debugLog( "#arguments.validVar#= false" );
 		}
@@ -303,19 +305,19 @@ component {
 	) {
 		arguments.errorScope= ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope );
 		arguments.errorMsg= "";
-		if ( !len( arguments.label ) ) {
+		if( !len( arguments.label ) ) {
 			arguments.errorMsg= arguments.error;
 		} else {
 			arguments.errorMsg= this.formatErrorMessage( arguments.error, arguments.label, arguments.errorClass, arguments.link, arguments.var );
 		}
-		if ( structKeyExists( arguments.errorScope, arguments.var ) ) {
+		if( structKeyExists( arguments.errorScope, arguments.var ) ) {
 			arguments.errorMsg= arguments.errorScope[ arguments.var ] & chr( 10 ) & arguments.errorMsg;
 		}
 		this.debugLog( "error #arguments.var#= #arguments.errorMsg#" );
 		// store the error, or append it to an existing one 
 		arguments.errorScope[ arguments.var ]= arguments.errorMsg;
 		// this.debugLog( duplicate( arguments.errorScope ) );
-		if ( len( arguments.validVar ) ) {
+		if( len( arguments.validVar ) ) {
 			"#arguments.validVar#"= false;
 			this.debugLog( "#arguments.validVar#= false" );
 		}
@@ -330,7 +332,7 @@ component {
 	,	string errorClass= this.defaults.errorClass
 	) {
 		var errorMsg= "";
-		if ( !len( arguments.label ) ) {
+		if( !len( arguments.label ) ) {
 			errorMsg= arguments.error;
 		} else {
 			errorMsg= this.formatErrorMessage( arguments.error, arguments.label, arguments.errorClass, arguments.link, arguments.var );
@@ -345,19 +347,19 @@ component {
 	,	boolean link= false
 	,	string var= ""
 	) {
-		if ( this.defaults.prefixLabel ) {
-			if ( !find( "{label}", arguments.message ) ) {
+		if( this.defaults.prefixLabel ) {
+			if( !find( "{label}", arguments.message ) ) {
 				arguments.message= "{label} " & arguments.message;
 			}
 			arguments.label= '<b>' & arguments.label & '</b>';
-			if ( arguments.link ) {
+			if( arguments.link ) {
 				arguments.label= '<a href="###arguments.var#" class="#arguments.errorClass#">' & arguments.label & '</a>';
 			}
 			arguments.message= replace( arguments.message, "{label}", arguments.label, "all" );
 		} else {
 			arguments.message= trim( replace( arguments.message, "{label}", "", "all" ) );
 		}
-		if ( this.defaults.sentence && right( arguments.message, 1 ) != "." && right( arguments.message, 1 ) != "!" ) {
+		if( this.defaults.sentence && right( arguments.message, 1 ) != "." && right( arguments.message, 1 ) != "!" ) {
 			arguments.message &= ".";
 		}
 		return arguments.message;
@@ -383,7 +385,7 @@ component {
 		arguments.errorScope= {};
 		arguments.rules= listPrepend( arguments.rules, "simple,submitted" );
 		arguments.validVar= "";
-		if ( cgi[ 'request_method' ] == "POST" ) {
+		if( cgi[ 'request_method' ] == "POST" ) {
 			arguments.defaultValue= true;
 		}
 		request.log( "METHOD: [#cgi[ 'request_method' ]#] #( cgi.request_method == 'POST' )#" );
@@ -411,7 +413,7 @@ component {
 		arguments.errorScope= {};
 		arguments.validVar= "";
 		arguments.label= "";
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
 		var v= this.validate( argumentCollection= arguments );
@@ -435,10 +437,10 @@ component {
 	) {
 		arguments.scope= "FORM";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
-		if ( !arguments.required ) {
+		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
 		var v= this.validate( argumentCollection= arguments );
@@ -461,14 +463,14 @@ component {
 	) {
 		arguments.scope= "FORM";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
-		if ( !arguments.required ) {
+		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
-		if ( find( ",", arguments.vars ) ) {
-			for ( arguments.var in listToArray( arguments.vars, ",;" ) ) {
+		if( find( ",", arguments.vars ) ) {
+			for( arguments.var in listToArray( arguments.vars, ",;" ) ) {
 				this.validate( argumentCollection= arguments );
 			}
 		} else {
@@ -498,18 +500,18 @@ component {
 		arguments.hasQuery= ( structKeyExists( arguments, "query" ) && arguments.query.recordCount );
 		arguments.scope= "FORM";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
-		if ( !arguments.required ) {
+		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
-		for ( arguments.var in listToArray( arguments.vars, ",;" ) ) {
+		for( arguments.var in listToArray( arguments.vars, ",;" ) ) {
 			arguments.defaultValue= standardDefault;
-			if ( arguments.hasQuery && listFindNoCase( arguments.query.columnList, arguments.var ) ) {
+			if( arguments.hasQuery && listFindNoCase( arguments.query.columnList, arguments.var ) ) {
 				// this.debugLog( "#arguments.var# Default value from query [#arguments.query[ arguments.var ]#]" );
 				arguments.defaultValue= arguments.query[ arguments.var ];
-			} else if ( structKeyExists( arguments.defaults, arguments.var ) ) {
+			} else if( structKeyExists( arguments.defaults, arguments.var ) ) {
 				// this.debugLog( "#arguments.var# Default value from defaults [#arguments.defaults[ arguments.var ]#]" );
 				arguments.defaultValue= arguments.defaults[ arguments.var ];
 			}
@@ -535,7 +537,7 @@ component {
 	) {
 		arguments.scope= "FORM";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
 		return this.validate( argumentCollection= arguments );
@@ -562,7 +564,7 @@ component {
 		arguments.errorScope= {};
 		arguments.validVar= "";
 		arguments.label= "";
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
 		var v= this.validate( argumentCollection= arguments );
@@ -585,10 +587,10 @@ component {
 	) {
 		arguments.scope= "URL";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
-		if ( !arguments.required ) {
+		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
 		var v= this.validate( argumentCollection= arguments );
@@ -611,14 +613,14 @@ component {
 	) {
 		arguments.scope= "URL";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
-		if ( !arguments.required ) {
+		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
-		if ( find( ",", arguments.vars ) ) {
-			for ( arguments.var in listToArray( arguments.vars, ",;" ) ) {
+		if( find( ",", arguments.vars ) ) {
+			for( arguments.var in listToArray( arguments.vars, ",;" ) ) {
 				this.validate( argumentCollection= arguments );
 			}
 		} else {
@@ -645,7 +647,7 @@ component {
 	) {
 		arguments.scope= "URL";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
 		return this.validate( argumentCollection= arguments );
@@ -672,7 +674,7 @@ component {
 		arguments.errorScope= {};
 		arguments.validVar= "";
 		arguments.label= "";
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
 		var v= this.validate( argumentCollection= arguments );
@@ -693,12 +695,12 @@ component {
 	,	string validVar= this.defaults.validVar
 	,	struct errorScope= {}
 	) {
-		if ( !arguments.required ) {
+		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
 		arguments.scope= "COOKIE";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
 		var v= this.validate( argumentCollection= arguments );
@@ -719,16 +721,16 @@ component {
 	,	string validVar= this.defaults.validVar
 	,	struct errorScope= {}
 	) {
-		if ( !arguments.required ) {
+		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
 		arguments.scope= "COOKIE";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
-		if ( find( ",", arguments.vars ) ) {
-			for ( arguments.var in listToArray( arguments.vars, ",;" ) ) {
+		if( find( ",", arguments.vars ) ) {
+			for( arguments.var in listToArray( arguments.vars, ",;" ) ) {
 				this.validate( argumentCollection= arguments );
 			}
 		} else {
@@ -755,7 +757,7 @@ component {
 	) {
 		arguments.scope= "COOKIE";
 		arguments.throwable= false;
-		if ( !listFindNoCase( arguments.rules, "simple" ) ) {
+		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
 		return this.validate( argumentCollection= arguments );

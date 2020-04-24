@@ -7,7 +7,7 @@
 		<cfset LOCAL.error = "stop">
 		<cfif arguments.mutable>
 			<!--- stop prevents further rules from processing but doesn't generate an error --->
-			<cfset LOCAL.value = arguments.default>
+			<cfset LOCAL.value = arguments.defaultValue>
 		</cfif>
 	</cfif>
 	<!--- give the variable a default if it doesn't exist or if its null --->
@@ -20,7 +20,7 @@
 		<!--- set the value to the default if its not required --->
 		<cfif arguments.mutable>
 			<!--- stop prevents further rules from processing but doesn't generate an error --->
-			<cfset LOCAL.value = arguments.default>
+			<cfset LOCAL.value = arguments.defaultValue>
 		</cfif>
 	</cfif>
 <cfelse><!--- defined --->
@@ -38,7 +38,7 @@
 				<cfset LOCAL.error = "stop">
 				<cfif arguments.mutable>
 					<!--- stop prevents further rules from processing but doesn't generate an error --->
-					<cfset LOCAL.value = arguments.default>
+					<cfset LOCAL.value = arguments.defaultValue>
 				</cfif>
 			</cfif>
 		</cfif>
@@ -51,7 +51,7 @@
 				<cfset LOCAL.error = "stop">
 				<cfif arguments.mutable>
 					<!--- stop prevents further rules from processing but doesn't generate an error --->
-					<cfset LOCAL.value = arguments.default>
+					<cfset LOCAL.value = arguments.defaultValue>
 				</cfif>
 			</cfif>
 		</cfif>
@@ -64,7 +64,7 @@
 				<cfset LOCAL.error = "stop">
 				<cfif arguments.mutable>
 					<!--- stop prevents further rules from processing but doesn't generate an error --->
-					<cfset LOCAL.value = arguments.default>
+					<cfset LOCAL.value = arguments.defaultValue>
 				</cfif>
 			</cfif>
 		</cfif>

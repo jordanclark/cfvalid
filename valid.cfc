@@ -1,7 +1,7 @@
 component {
 
 	function init(
-		required string rulePaths
+		string rulePaths= "./rules"
 	,	string errorScope= "request.errors"
 	,	string validVar= "request.isValid"
 	,	boolean prefixLabel= true
@@ -17,7 +17,7 @@ component {
 		,	mutable= true
 		,	trim= true
 		,	autoFix= false
-		,	default= ""
+		,	defaultValue= ""
 		,	defaultOnError= true
 		,	throwable= false
 		,	link= arguments.link
@@ -42,7 +42,12 @@ component {
 				request.log( arguments.input );
 			}
 		} else {
-			cftrace( text=( isSimpleValue( arguments.input ) ? arguments.input : "" ), var= arguments.input, category= "valid.cfc", type= "information" );
+			var info= ( isSimpleValue( arguments.input ) ? arguments.input : serializeJson( arguments.input ) );
+			cftrace(
+				var= "info"
+			,	category= "valid.cfc"
+			,	type= "information"
+			);
 		}
 		return;
 	}
@@ -109,7 +114,7 @@ component {
 		required struct scope
 	,	required string var
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= true
 	,	string trim= true
 	,	boolean autoFix= true
@@ -131,7 +136,7 @@ component {
 		required struct scope
 	,	required string var
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= false
 	,	string trim= true
 	,	boolean autoFix= true
@@ -155,7 +160,7 @@ component {
 		required struct scope
 	,	required string vars
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= false
 	,	string trim= true
 	,	boolean autoFix= true
@@ -187,7 +192,7 @@ component {
 	,	required string var
 	,	string label= arguments.var
 	,	required string rules
-	,	default= this.defaults.default
+	,	defaultValue= this.defaults.defaultValue
 	,	boolean required= this.defaults.required
 	,	string trim= this.defaults.trim
 	,	boolean autoFix= this.defaults.autoFix
@@ -206,11 +211,16 @@ component {
 		,	ruleArg= ""
 		,	error= ""
 		,	isValid= true
-		,	value= nullValue()
+		,	value= javaCast( "null", 0 )
 		,	rulesList= ""
-		,	errorScope= ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope )
+		,	errorScope= {}
 		,	scope= ( isSimpleValue( arguments.scope ) ? evaluate( arguments.scope ) : arguments.scope )
 		});
+		if( isStruct( arguments.errorScope ) ) {
+			LOCAL.errorScope= arguments.errorScope;
+		} else if( isSimpleValue( arguments.errorScope ) && len( arguments.errorScope ) && isDefined( arguments.errorScope ) ) {
+			LOCAL.errorScope= evaluate( arguments.errorScope );
+		}
 		// apply magic rules 
 		for ( LOCAL.rule in listToArray( arguments.rules, "," ) ) {
 			if ( structKeyExists( this.magicRules, LOCAL.rule ) ) {
@@ -234,7 +244,7 @@ component {
 				break;
 			} else if ( len( LOCAL.error ) ) {
 				if ( arguments.defaultOnError ) {
-					LOCAL.value= arguments.default;
+					LOCAL.value= arguments.defaultValue;
 				}
 				if ( isNull( LOCAL.value ) || !isSimpleValue( LOCAL.value ) ) {
 					this.debugLog( "Failed #arguments.var# '#LOCAL.rule#': #replace( LOCAL.error, '{label}', '', 'all' )# [null/complex]" );
@@ -360,7 +370,7 @@ component {
 	function formSubmitted(
 		string var= "submit"
 	,	string rules= ""
-	,	default= false
+	,	defaultValue= false
 	,	string errorClass= this.defaults.errorClass
 	) {
 		arguments.scope= "FORM";
@@ -374,7 +384,7 @@ component {
 		arguments.rules= listPrepend( arguments.rules, "simple,submitted" );
 		arguments.validVar= "";
 		if ( cgi[ 'request_method' ] == "POST" ) {
-			arguments.default= true;
+			arguments.defaultValue= true;
 		}
 		request.log( "METHOD: [#cgi[ 'request_method' ]#] #( cgi.request_method == 'POST' )#" );
 		arguments.defaultOnError= true;
@@ -387,7 +397,7 @@ component {
 	boolean function isFormValid(
 		required string var
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= true
 	,	string trim= true
 	,	boolean autoFix= true
@@ -412,7 +422,7 @@ component {
 	function formParam(
 		required string var
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= false
 	,	string trim= true
 	,	boolean autoFix= true
@@ -438,7 +448,7 @@ component {
 	function formParams(
 		required string vars
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= false
 	,	string trim= true
 	,	boolean autoFix= true
@@ -471,7 +481,7 @@ component {
 	function formQueryParams(
 		required string vars
 	,	string rules= ""
-	,	string default= ""
+	,	string defaultValue= ""
 	,	query query
 	,	struct defaults= {}
 	,	boolean required= false
@@ -484,7 +494,7 @@ component {
 	,	string validVar= this.defaults.validVar
 	,	struct errorScope= {}
 	) {
-		var standardDefault= arguments.default;
+		var standardDefault= arguments.defaultValue;
 		arguments.hasQuery= ( structKeyExists( arguments, "query" ) && arguments.query.recordCount );
 		arguments.scope= "FORM";
 		arguments.throwable= false;
@@ -495,13 +505,13 @@ component {
 			arguments.validVar= "";
 		}
 		for ( arguments.var in listToArray( arguments.vars, ",;" ) ) {
-			arguments.default= standardDefault;
+			arguments.defaultValue= standardDefault;
 			if ( arguments.hasQuery && listFindNoCase( arguments.query.columnList, arguments.var ) ) {
 				// this.debugLog( "#arguments.var# Default value from query [#arguments.query[ arguments.var ]#]" );
-				arguments.default= arguments.query[ arguments.var ];
+				arguments.defaultValue= arguments.query[ arguments.var ];
 			} else if ( structKeyExists( arguments.defaults, arguments.var ) ) {
 				// this.debugLog( "#arguments.var# Default value from defaults [#arguments.defaults[ arguments.var ]#]" );
-				arguments.default= arguments.defaults[ arguments.var ];
+				arguments.defaultValue= arguments.defaults[ arguments.var ];
 			}
 			this.validate( argumentCollection= arguments );
 		}
@@ -512,7 +522,7 @@ component {
 		required string var
 	,	string label= arguments.var
 	,	string rules= ""
-	,	default= this.defaults.default
+	,	defaultValue= this.defaults.defaultValue
 	,	boolean required= true
 	,	string trim= this.defaults.trim
 	,	boolean autoFix= true
@@ -538,7 +548,7 @@ component {
 	boolean function isUrlValid(
 		required string var
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= true
 	,	string trim= true
 	,	boolean autoFix= true
@@ -562,7 +572,7 @@ component {
 	function urlParam(
 		required string var
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= false
 	,	string trim= true
 	,	boolean autoFix= true
@@ -588,7 +598,7 @@ component {
 	function urlParams(
 		required string vars
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= false
 	,	string trim= true
 	,	boolean autoFix= true
@@ -622,7 +632,7 @@ component {
 		required string var
 	,	string label= arguments.var
 	,	string rules= ""
-	,	default= this.defaults.default
+	,	defaultValue= this.defaults.defaultValue
 	,	boolean required= true
 	,	string trim= this.defaults.trim
 	,	boolean autoFix= true
@@ -648,7 +658,7 @@ component {
 	boolean function isCookieValid(
 		required string var
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= true
 	,	string trim= true
 	,	boolean autoFix= true
@@ -672,7 +682,7 @@ component {
 	function cookieParam(
 		required string var
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= false
 	,	string trim= true
 	,	boolean autoFix= true
@@ -698,7 +708,7 @@ component {
 	function cookieParams(
 		required string vars
 	,	string rules= ""
-	,	default= ""
+	,	defaultValue= ""
 	,	boolean required= false
 	,	string trim= true
 	,	boolean autoFix= true
@@ -732,7 +742,7 @@ component {
 		required string var
 	,	string label= arguments.var
 	,	string rules= ""
-	,	default= this.defaults.default
+	,	defaultValue= this.defaults.defaultValue
 	,	boolean required= true
 	,	string trim= this.defaults.trim
 	,	boolean autoFix= true

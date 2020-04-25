@@ -17,7 +17,7 @@ component {
 	,	string errorStruct= "request.errors"
 	,	string validVar= "request.isValid"
 	,	boolean prefixLabel= true
-	,	boolean sentense= true
+	,	boolean sentence= true
 	,	boolean link= true
 	,	string throwType= "Custom.Input.Validation"
 	,	struct defaults= {}
@@ -36,7 +36,7 @@ component {
 		,	errorClass= "Error"
 		,	validVar= arguments.validVar
 		,	prefixLabel= arguments.prefixLabel
-		,	sentence= arguments.sentense
+		,	sentence= arguments.sentence
 		,	errorStruct= arguments.errorStruct
 		,	message= "is a required field that was skipped"
 		}, false );

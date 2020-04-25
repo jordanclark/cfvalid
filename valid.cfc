@@ -1,5 +1,17 @@
 component {
 
+	/**
+	 * Init
+	 *
+	 * @rulePaths include path to include rules from 1 or more directors
+	 * @errorStruct var name of struct where error messages are put from validate() type functions
+	 * @validVar var name of bool which indicates a validation error
+	 * @prefixLabel if the field label should be prefixed to error messages
+	 * @sentence if error messages should be sentences
+	 * @link if error messages should link to the form field
+	 * @throwType the custom type of throwable errors
+	 * @defaults default values used for most validation functions
+	 */
 	function init(
 		string rulePaths= "./rules"
 	,	string errorStruct= "request.errors"
@@ -72,6 +84,12 @@ component {
 		return found;
 	}
 
+	/**
+	 * Check the error struct has any error messages in it.
+	 *
+	 * @validVar var name
+	 * @errorStruct var name
+	 */
 	boolean function anyErrors(string validVar= this.defaults.validVar, errorStruct= this.defaults.errorStruct) {
 		LOCAL.bError= false;
 		if( len( arguments.validVar ) && evaluate( arguments.validVar ) == false ) {
@@ -85,6 +103,12 @@ component {
 		return LOCAL.bError;
 	}
 
+	/**
+	 * Check if one of the vars exists in the error struct
+	 *
+	 * @vars 
+	 * @errorStruct 
+	 */
 	boolean function hadError(required string vars, errorStruct= this.defaults.errorStruct) {
 		LOCAL.bError= false;
 		LOCAL.errorStruct= ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct );

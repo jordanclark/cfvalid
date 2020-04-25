@@ -28,7 +28,7 @@ component {
 		,	errorStruct= arguments.errorStruct
 		,	message= "is a required field that was skipped"
 		}, false );
-		this.magicRules= {};
+		this.comboRules= {};
 		this.pathCache= {};
 		return this;
 	}
@@ -102,10 +102,10 @@ component {
 		return structClear( ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct ) );
 	}
 
-	function addMagicRule(required string name, required string rules) {
+	function addComboRule(required string name, required string rules) {
 		var n= arguments.name;
 		structDelete( arguments, "name" );
-		this.magicRules[ n ]= arguments;
+		this.comboRules[ n ]= arguments;
 		return this;
 	}
 
@@ -219,10 +219,10 @@ component {
 			}
 			LOCAL.errorStruct= evaluate( arguments.errorStruct );
 		}
-		// apply magic rules 
+		// apply combo rules 
 		for( LOCAL.rule in listToArray( arguments.rules, "," ) ) {
-			if( structKeyExists( this.magicRules, LOCAL.rule ) ) {
-				var mRule= this.magicRules[ listFirst( LOCAL.rule, ':' ) ];
+			if( structKeyExists( this.comboRules, LOCAL.rule ) ) {
+				var mRule= this.comboRules[ listFirst( LOCAL.rule, ':' ) ];
 				// apply extra args 
 				structAppend( arguments, mRule, true );
 				LOCAL.rulesList= listAppend( LOCAL.rulesList, mRule.rules );

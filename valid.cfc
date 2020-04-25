@@ -2,17 +2,18 @@ component {
 
 	function init(
 		string rulePaths= "./rules"
-	,	string errorScope= "request.errors"
+	,	string errorStruct= "request.errors"
 	,	string validVar= "request.isValid"
 	,	boolean prefixLabel= true
 	,	boolean sentense= true
 	,	boolean link= true
 	,	string throwType= "Custom.Input.Validation"
+	,	struct defaults= {}
 	) {
 		this.rulePaths= arguments.rulePaths;
-		this.errorScope= arguments.errorScope;
+		this.errorStruct= arguments.errorStruct;
 		this.throwType= arguments.throwType;
-		this.defaults= {
+		this.defaults= structAppend( arguments.defaults, {
 			required= true
 		,	mutable= true
 		,	autoFix= false
@@ -24,9 +25,9 @@ component {
 		,	validVar= arguments.validVar
 		,	prefixLabel= arguments.prefixLabel
 		,	sentence= arguments.sentense
-		,	errorScope= arguments.errorScope
+		,	errorStruct= arguments.errorStruct
 		,	message= "is a required field that was skipped"
-		};
+		}, false );
 		this.magicRules= {};
 		this.pathCache= {};
 		return this;
@@ -71,24 +72,24 @@ component {
 		return found;
 	}
 
-	boolean function anyErrors(string validVar= this.defaults.validVar, errorScope= this.defaults.errorScope) {
+	boolean function anyErrors(string validVar= this.defaults.validVar, errorStruct= this.defaults.errorStruct) {
 		LOCAL.bError= false;
 		if( len( arguments.validVar ) && evaluate( arguments.validVar ) == false ) {
 			LOCAL.bError= true;
-		} else if( len( arguments.errorScope ) ) {
-			LOCAL.errorScope= ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope );
-			if( isStruct( LOCAL.errorScope ) && !structIsEmpty( LOCAL.errorScope ) ) {
+		} else if( len( arguments.errorStruct ) ) {
+			LOCAL.errorStruct= ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct );
+			if( isStruct( LOCAL.errorStruct ) && !structIsEmpty( LOCAL.errorStruct ) ) {
 				LOCAL.bError= true;
 			}
 		}
 		return LOCAL.bError;
 	}
 
-	boolean function hadError(required string vars, errorScope= this.defaults.errorScope) {
+	boolean function hadError(required string vars, errorStruct= this.defaults.errorStruct) {
 		LOCAL.bError= false;
-		LOCAL.errorScope= ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope );
+		LOCAL.errorStruct= ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct );
 		for( LOCAL.var in listToArray( arguments.vars, ",; " ) ) {
-			if( structKeyExists( LOCAL.errorScope, LOCAL.var ) ) {
+			if( structKeyExists( LOCAL.errorStruct, LOCAL.var ) ) {
 				LOCAL.bError= true;
 				break;
 			}
@@ -97,8 +98,8 @@ component {
 		return LOCAL.bError;
 	}
 
-	function clearErrors(errorScope= this.defaults.errorScope) {
-		return structClear( ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope ) );
+	function clearErrors(errorStruct= this.defaults.errorStruct) {
+		return structClear( ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct ) );
 	}
 
 	function addMagicRule(required string name, required string rules) {
@@ -122,7 +123,7 @@ component {
 	,	string errorClass= this.defaults.errorClass
 	) {
 		arguments.throwable= false;
-		arguments.errorScope= {};
+		arguments.errorStruct= {};
 		arguments.validVar= "";
 		arguments.label= "";
 		var v= this.validate( argumentCollection= arguments );
@@ -142,7 +143,7 @@ component {
 	,	boolean throwable= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		arguments.throwable= false;
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
@@ -165,7 +166,7 @@ component {
 	,	boolean throwable= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		arguments.throwable= false;
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
@@ -195,7 +196,7 @@ component {
 	,	boolean link= this.defaults.link
 	,	boolean throwable= this.defaults.throwable
 	,	string errorClass= this.defaults.errorClass
-	,	errorScope= this.defaults.errorScope
+	,	errorStruct= this.defaults.errorStruct
 	,	string validVar= this.defaults.validVar
 	,	string error
 	) {
@@ -207,16 +208,16 @@ component {
 		,	isValid= true
 		,	value= javaCast( "null", 0 )
 		,	rulesList= ""
-		,	errorScope= {}
+		,	errorStruct= {}
 		,	scope= ( isSimpleValue( arguments.scope ) ? evaluate( arguments.scope ) : arguments.scope )
 		});
-		if( isStruct( arguments.errorScope ) ) {
-			LOCAL.errorScope= arguments.errorScope;
-		} else if( isSimpleValue( arguments.errorScope ) && len( arguments.errorScope ) ) {
-			if( !isDefined( arguments.errorScope ) ) {
-				"#arguments.errorScope#"= {};
+		if( isStruct( arguments.errorStruct ) ) {
+			LOCAL.errorStruct= arguments.errorStruct;
+		} else if( isSimpleValue( arguments.errorStruct ) && len( arguments.errorStruct ) ) {
+			if( !isDefined( arguments.errorStruct ) ) {
+				"#arguments.errorStruct#"= {};
 			}
-			LOCAL.errorScope= evaluate( arguments.errorScope );
+			LOCAL.errorStruct= evaluate( arguments.errorStruct );
 		}
 		// apply magic rules 
 		for( LOCAL.rule in listToArray( arguments.rules, "," ) ) {
@@ -256,11 +257,11 @@ component {
 				// build the error msg 
 				LOCAL.errorMsg= this.formatErrorMessage( LOCAL.error, arguments.label, arguments.errorClass, arguments.link, arguments.var );
 				// prepend the existing error if there is one 
-				if( structKeyExists( LOCAL.errorScope, arguments.var ) ) {
-					LOCAL.errorMsg= LOCAL.errorScope[ arguments.var ] & chr( 10 ) & LOCAL.errorMsg;
+				if( structKeyExists( LOCAL.errorStruct, arguments.var ) ) {
+					LOCAL.errorMsg= LOCAL.errorStruct[ arguments.var ] & chr( 10 ) & LOCAL.errorMsg;
 				}
 				// store the error, or append it to an existing one 
-				LOCAL.errorScope[ arguments.var ]= LOCAL.errorMsg;
+				LOCAL.errorStruct[ arguments.var ]= LOCAL.errorMsg;
 				if( arguments.throwable ) {
 					if( arguments.mutable ) {
 						LOCAL.scope[ arguments.var ]= LOCAL.value;
@@ -295,23 +296,23 @@ component {
 	,	string label= ""
 	,	boolean link= this.defaults.link
 	,	string errorClass= this.defaults.errorClass
-	,	errorScope= this.defaults.errorScope
+	,	errorStruct= this.defaults.errorStruct
 	,	string validVar= this.defaults.validVar
 	) {
-		arguments.errorScope= ( isSimpleValue( arguments.errorScope ) ? evaluate( arguments.errorScope ) : arguments.errorScope );
+		arguments.errorStruct= ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct );
 		arguments.errorMsg= "";
 		if( !len( arguments.label ) ) {
 			arguments.errorMsg= arguments.error;
 		} else {
 			arguments.errorMsg= this.formatErrorMessage( arguments.error, arguments.label, arguments.errorClass, arguments.link, arguments.var );
 		}
-		if( structKeyExists( arguments.errorScope, arguments.var ) ) {
-			arguments.errorMsg= arguments.errorScope[ arguments.var ] & chr( 10 ) & arguments.errorMsg;
+		if( structKeyExists( arguments.errorStruct, arguments.var ) ) {
+			arguments.errorMsg= arguments.errorStruct[ arguments.var ] & chr( 10 ) & arguments.errorMsg;
 		}
 		this.debugLog( "error #arguments.var#= #arguments.errorMsg#" );
 		// store the error, or append it to an existing one 
-		arguments.errorScope[ arguments.var ]= arguments.errorMsg;
-		// this.debugLog( duplicate( arguments.errorScope ) );
+		arguments.errorStruct[ arguments.var ]= arguments.errorMsg;
+		// this.debugLog( duplicate( arguments.errorStruct ) );
 		if( len( arguments.validVar ) ) {
 			"#arguments.validVar#"= false;
 			this.debugLog( "#arguments.validVar#= false" );
@@ -376,7 +377,7 @@ component {
 		arguments.autoFix= true;
 		arguments.mutable= true;
 		arguments.link= false;
-		arguments.errorScope= {};
+		arguments.errorStruct= {};
 		arguments.rules= listPrepend( arguments.rules, "simple,submitted" );
 		arguments.validVar= "";
 		if( cgi[ 'request_method' ] == "POST" ) {
@@ -403,7 +404,7 @@ component {
 	) {
 		arguments.scope= "FORM";
 		arguments.throwable= false;
-		arguments.errorScope= {};
+		arguments.errorStruct= {};
 		arguments.validVar= "";
 		arguments.label= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
@@ -425,7 +426,7 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		arguments.scope= "FORM";
 		arguments.throwable= false;
@@ -450,7 +451,7 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		arguments.scope= "FORM";
 		arguments.throwable= false;
@@ -484,7 +485,7 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		var standardDefault= arguments.defaultValue;
 		arguments.hasQuery= ( structKeyExists( arguments, "query" ) && arguments.query.recordCount );
@@ -549,7 +550,7 @@ component {
 	) {
 		arguments.scope= "URL";
 		arguments.throwable= false;
-		arguments.errorScope= {};
+		arguments.errorStruct= {};
 		arguments.validVar= "";
 		arguments.label= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
@@ -570,7 +571,7 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		arguments.scope= "URL";
 		arguments.throwable= false;
@@ -595,7 +596,7 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		arguments.scope= "URL";
 		arguments.throwable= false;
@@ -655,7 +656,7 @@ component {
 	) {
 		arguments.scope= "COOKIE";
 		arguments.throwable= false;
-		arguments.errorScope= {};
+		arguments.errorStruct= {};
 		arguments.validVar= "";
 		arguments.label= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
@@ -676,7 +677,7 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		if( !arguments.required ) {
 			arguments.validVar= "";
@@ -701,7 +702,7 @@ component {
 	,	boolean link= false
 	,	string errorClass= this.defaults.errorClass
 	,	string validVar= this.defaults.validVar
-	,	struct errorScope= {}
+	,	struct errorStruct= {}
 	) {
 		if( !arguments.required ) {
 			arguments.validVar= "";

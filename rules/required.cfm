@@ -27,7 +27,7 @@
 	<cfset LOCAL.value = LOCAL.scope[ arguments.var ]>
 	<cfif isSimpleValue( LOCAL.value )>
 		<!--- trim space --->
-		<cfif arguments.trim AND arguments.mutable>
+		<cfif arguments.autoFix AND arguments.mutable>
 			<cfset LOCAL.value = trim( LOCAL.value )>
 		</cfif>
 		<!--- ensure required field has value --->

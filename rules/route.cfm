@@ -1,4 +1,4 @@
-<cfif arguments.mutable AND arguments.trim>
+<cfif arguments.mutable AND arguments.autoFix>
 	<cfset LOCAL.value = trim( reReplaceNoCase( LOCAL.value, "[^a-z0-9.-]", "", "all" ) )>
 </cfif>
 

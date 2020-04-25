@@ -15,7 +15,6 @@ component {
 		this.defaults= {
 			required= true
 		,	mutable= true
-		,	trim= true
 		,	autoFix= false
 		,	defaultValue= ""
 		,	defaultOnError= true
@@ -115,7 +114,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= true
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -137,7 +135,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -161,7 +158,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -193,7 +189,6 @@ component {
 	,	required string rules
 	,	defaultValue= this.defaults.defaultValue
 	,	boolean required= this.defaults.required
-	,	string trim= this.defaults.trim
 	,	boolean autoFix= this.defaults.autoFix
 	,	boolean mutable= this.defaults.mutable
 	,	boolean defaultOnError= this.defaults.defaultOnError
@@ -379,7 +374,6 @@ component {
 		arguments.throwable= false;
 		arguments.required= false;
 		arguments.autoFix= true;
-		arguments.trim= true;
 		arguments.mutable= true;
 		arguments.link= false;
 		arguments.errorScope= {};
@@ -401,7 +395,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= true
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -426,7 +419,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -452,7 +444,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -487,7 +478,6 @@ component {
 	,	query query
 	,	struct defaults= {}
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -526,7 +516,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= this.defaults.defaultValue
 	,	boolean required= true
-	,	string trim= this.defaults.trim
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -552,7 +541,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= true
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -576,7 +564,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -602,7 +589,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -636,7 +622,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= this.defaults.defaultValue
 	,	boolean required= true
-	,	string trim= this.defaults.trim
 	,	boolean autoFix= true
 	,	boolean mutable= true
 	,	boolean defaultOnError= true
@@ -662,7 +647,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= true
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= false
 	,	boolean defaultOnError= true
@@ -686,7 +670,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= false
 	,	boolean defaultOnError= true
@@ -712,7 +695,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= ""
 	,	boolean required= false
-	,	string trim= true
 	,	boolean autoFix= true
 	,	boolean mutable= false
 	,	boolean defaultOnError= true
@@ -746,7 +728,6 @@ component {
 	,	string rules= ""
 	,	defaultValue= this.defaults.defaultValue
 	,	boolean required= true
-	,	string trim= this.defaults.trim
 	,	boolean autoFix= true
 	,	boolean mutable= false
 	,	boolean defaultOnError= true

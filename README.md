@@ -25,34 +25,43 @@ values, and if the result is valid no error is thrown.
 * `label=string` - field name to display in error messages
 * `autoFix=bool` - some rules may attempt to auto fix input to be valid
 * `throwable=bool` - defaults to false, this will make any validation error throw a cfthrow exception that can be caught by error handling
-
-`valid.param( scope=form, var="test", rule="length:1-10" );`
-`valid.param( scope=form, var="test", rule="length", min=1, max=10 );`
-`valid.param( scope=request, var="foo", rule="boolean", default= false );`
+```
+valid.param( scope=form, var="test", rule="length:1-10" );
+valid.param( scope=form, var="test", rule="length", min=1, max=10 );
+valid.param( scope=request, var="foo", rule="boolean", default= false );
+```
 
 ## validate()
 #### formValidate() / urlValidate() / cookieValidate()
 Checks if a variable is valid against a list of customizable rules, error messages are added to a errorStruct (default request.errors)
-` valid.formValidate( var="name", label="Name", rules="string,length:<50" ); `
-` valid.formValidate( var="email", label="Email Address", rules="string,email,length:5-75" ); `
-` valid.validate( scope=cfc.person, var="name", label="Person Name", rules="string,length:<50", mutable= false ); `
+```
+valid.formValidate( var="name", label="Name", rules="string,length:<50" );
+valid.formValidate( var="email", label="Email Address", rules="string,email,length:5-75" );
+valid.validate( scope=cfc.person, var="name", label="Person Name", rules="string,length:<50", mutable= false );
+```
 
 ## param() or params()
 #### formParam() / formParams() / urlParam() / urlParams() / cookieParam() / cookieParams()
 Checks if a variable is valid against a list of customizable rules, defaults to not required, returns no error messages, just useful for
 safely handling variables, similar but better than cfparam.
-` valid.param( scope=request, var="test", rules="boolean", default=false ); `
-` valid.urlParams( vars="fname,mname,lname", rules="string,html_safe", default="" ); `
+```
+valid.param( scope=request, var="test", rules="boolean", default=false );
+valid.urlParams( vars="fname,mname,lname", rules="string,html_safe", default="" );
+```
 
 ## isValid()
 #### isFormValid() / isUrlValid() / isCookieValid()
 Checks if a variable is valid against a list of customizable rules, and returns true/false.
-` <cfif valid.isValid( scope=form, var="name", rules= "string,length:<50" )> ... </cfif>`
-` <cfif valid.isFormValid( "name", "String,length:<50" )> ... </cfif>`
+```
+<cfif valid.isValid( scope=form, var="name", rules= "string,length:<50" )> ... </cfif>
+<cfif valid.isFormValid( "name", "String,length:<50" )> ... </cfif>
+```
 
 ### error() 
 If you want to create an error message without processing any rules
-` valid.error( var="email", error="This email address already exists in our system" ); `
+```
+valid.error( var="email", error="This email address already exists in our system" );
+```
 
 ### anyErrors()
 Check the error struct has any error messages in it.
@@ -84,7 +93,9 @@ valid.addComboRule(
 );
 ```
 Then just apply it like a normal single rule:
-`valid.formValidate( var= "email", rules= "email_group" ); `
+```
+valid.formValidate( var= "email", rules= "email_group" );
+```
 
 ## Custom Rule Example
 Place new rules in the /rules folder (or add another folder to the init "rulePaths"), then check LOCAL.value against your rule, if there is a problem set LOCAL.error= "bad things happened". You can also add your own custom arguments, just try and make their names unique

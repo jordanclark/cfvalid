@@ -25,7 +25,7 @@ component {
 		this.rulePaths= arguments.rulePaths;
 		this.errorStruct= arguments.errorStruct;
 		this.throwType= arguments.throwType;
-		this.defaults= structAppend( arguments.defaults, {
+		structAppend( arguments.defaults, {
 			required= true
 		,	mutable= true
 		,	autoFix= false
@@ -40,6 +40,7 @@ component {
 		,	errorStruct= arguments.errorStruct
 		,	message= "is a required field that was skipped"
 		}, false );
+		this.defaults= arguments.defaults;
 		this.comboRules= {};
 		this.pathCache= {};
 		return this;

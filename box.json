@@ -1,14 +1,14 @@
 {
     "name":"cfvalid",
     "slug":"cfvalid",
-    "version":"0.8.3",
+    "version":"1.0.0",
     "author":"Jordan Clark <jordanclark@gmail.com>",
     "keywords":[
         "input validation"
     ],
     "shortDescription":"Input validation made awesome",
     "type":"modules",
-    "location":"jordanclark/cfvalid#v0.8.3",
+    "location":"jordanclark/cfvalid#v1.0.0",
     "repository":{
         "URL":"https://github.com/jordanclark/cfvalid.git",
         "type":"GIT"
@@ -31,5 +31,11 @@
         "postVersion":"package set location='jordanclark/cfvalid#v`package version`'",
         "onRelease":"publish",
         "postPublish":"!git push --follow-tags"
+    },
+    "installPaths":{
+        "testbox":"testbox/"
+    },
+    "devDependencies":{
+        "testbox":"^4.0"
     }
 }

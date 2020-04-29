@@ -1,4 +1,4 @@
-<cfif arguments.autoFix AND arguments.mutable>
+<cfif arguments.autoFix>
 	<cfset LOCAL.value = trim( reReplace( LOCAL.value, "[^[:alpha:].', -]", "", "all" ) )>
 </cfif>
 

@@ -17,7 +17,7 @@
 	<cfset arguments.maxWords = "">
 </cfif>
 
-<cfif arguments.mutable AND arguments.wordRespace>
+<cfif arguments.wordRespace>
 	<cfset LOCAL.value = trim( reReplace( LOCAL.value, "\s+", " ", "all" ) )>
 	<cfset wordCount = listLen( LOCAL.value, " " )>
 <cfelse>

@@ -1,6 +1,6 @@
 <!--- 20181029 --->
 
-<cfif arguments.autoFix AND arguments.mutable>
+<cfif arguments.autoFix>
 	<cfset LOCAL.value = reReplace( LOCAL.value, "[^[:digit:]]", "", "all" )>
 </cfif>
 

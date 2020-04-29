@@ -1,7 +1,7 @@
 <cfset LOCAL.cardNum = reReplaceNoCase( LOCAL.value, "[^0-9]", "", "all" )>
 <cfset LOCAL.length = len( LOCAL.cardNum )>
 
-<cfif arguments.autoFix AND arguments.mutable>
+<cfif arguments.autoFix>
 	<cfset LOCAL.value = LOCAL.cardNum>
 </cfif>
 

@@ -3,10 +3,6 @@
 <!--- <cfparam name="arguments.find2" type="string"> --->
 <!--- <cfparam name="arguments.find3" type="string"> --->
 
-<cfif NOT arguments.mutable>
-	<cfexit>
-</cfif>
-
 <cfloop index="LOCAL.x" from="1" to="10">
 	<cfif structKeyExists( arguments, "find#LOCAL.x#" ) AND structKeyExists( arguments, "replace#LOCAL.x#" )>
 		<cfset LOCAL.find = arguments[ "find#LOCAL.x#" ]>

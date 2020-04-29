@@ -6,14 +6,14 @@
 <cfif arguments.caseSensitive>
 	<cfif reFind( arguments.contains, LOCAL.value )>
 		<cfset LOCAL.error = "{label} #arguments.containsError#.">
-		<cfif arguments.mutable AND structKeyExists( arguments, "containsReplace" )>
+		<cfif structKeyExists( arguments, "containsReplace" )>
 			<cfset LOCAL.value = reReplace( LOCAL.value, arguments.contains, arguments.containsReplace, "all" )>
 		</cfif>
 	</cfif>
 <cfelse>
 	<cfif reFindNoCase( arguments.contains, LOCAL.value )>
 		<cfset LOCAL.error = "{label} #arguments.containsError#.">
-		<cfif arguments.mutable AND structKeyExists( arguments, "containsReplace" )>
+		<cfif structKeyExists( arguments, "containsReplace" )>
 			<cfset LOCAL.value = reReplaceNoCase( LOCAL.value, arguments.contains, arguments.containsReplace, "all" )>
 		</cfif>
 	</cfif>

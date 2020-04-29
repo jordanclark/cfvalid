@@ -1,7 +1,7 @@
 <cfparam name="arguments.booleanType" type="string" default="true_false">
 
 <cfif isBoolean( LOCAL.value )>
-	<cfif arguments.mutable AND arguments.autoFix>
+	<cfif arguments.autoFix>
 		<cfswitch expression="#arguments.booleanType#">
 			<cfcase value="truefalse,true_false">
 				<cfif LOCAL.value IS true>
@@ -34,9 +34,7 @@
 		</cfswitch>
 	</cfif>
 <cfelse>
-	<cfif arguments.mutable>
-		<cfset LOCAL.value = "">
-	</cfif>
+	<cfset LOCAL.value = "">
 	<cfset LOCAL.error = "{label} can only be a ""true"" or ""false"" value.">
 </cfif>
 

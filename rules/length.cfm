@@ -33,24 +33,20 @@
 
 <cfset LOCAL.len = len( LOCAL.value )>
 
-<cfif arguments.autoFix AND arguments.mutable AND len( arguments.max ) AND LOCAL.len GT arguments.max>
+<cfif arguments.autoFix AND len( arguments.max ) AND LOCAL.len GT arguments.max>
 	<cfset LOCAL.value = left( LOCAL.value, arguments.max )>
 	<cfset LOCAL.len = len( LOCAL.value )>
 </cfif>
 
 <cfif len( arguments.max ) AND len( arguments.min )>
 	<cfif LOCAL.len GT arguments.max OR LOCAL.len LT arguments.min>
-		<cfif arguments.mutable>
-			<cfset LOCAL.value = left( LOCAL.value, arguments.max )>
-		</cfif>
+		<cfset LOCAL.value = left( LOCAL.value, arguments.max )>
 		<cfset LOCAL.error = "{label} must be between #arguments.min#-#arguments.max# #arguments.lengthUnits#s long.">
 	</cfif>
 
 <cfelseif len( arguments.max )>
 	<cfif LOCAL.len GT arguments.max>
-		<cfif arguments.mutable>
-			<cfset LOCAL.value = left( LOCAL.value, arguments.max )>
-		</cfif>
+		<cfset LOCAL.value = left( LOCAL.value, arguments.max )>
 		<cfif arguments.max IS 1>
 			<cfset LOCAL.error = "{label} must be no more than #arguments.max# #arguments.lengthUnits# long.">
 		<cfelse>
@@ -69,9 +65,7 @@
 
 <cfelseif len( arguments.length )>
 	<cfif LOCAL.len IS NOT arguments.length>
-		<cfif arguments.mutable>
-			<cfset LOCAL.value = left( LOCAL.value, arguments.length )>
-		</cfif>
+		<cfset LOCAL.value = left( LOCAL.value, arguments.length )>
 		<cfif arguments.min IS 1>
 			<cfset LOCAL.error = "{label} must be exactly #arguments.length# #arguments.lengthUnits# long.">
 		<cfelse>

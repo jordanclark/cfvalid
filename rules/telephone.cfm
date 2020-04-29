@@ -66,7 +66,7 @@ EXCLUDE
 <cfswitch expression="#arguments.telephone#">
 
 	<cfcase value="phoneStrict7">
-		<cfif arguments.mutable>
+		<cfif arguments.autofix>
 			<cfset LOCAL.value = reReplaceNoCase( LOCAL.value, "[^0-9|#arguments.divider#]", "", "all" )>
 		</cfif>
 		<cfif NOT reFindNoCase( "^[0-9]{3}#arguments.divider#[0-9]{4}$", LOCAL.value )>
@@ -75,7 +75,7 @@ EXCLUDE
 	</cfcase>
 	
 	<cfcase value="phoneStrict10">
-		<cfif arguments.mutable>
+		<cfif arguments.autofix>
 			<cfset LOCAL.value = reReplaceNoCase( LOCAL.value, "[^0-9|#arguments.divider#]", "", "all" )>
 		</cfif>
 		
@@ -85,7 +85,7 @@ EXCLUDE
 	</cfcase>
 	
 	<cfcase value="us-phone">
-		<cfif arguments.mutable>
+		<cfif arguments.autofix>
 			<cfset LOCAL.value = udf.phoneFormat( reReplaceNoCase( LOCAL.value, "[^0-9 x#arguments.divider#]", "", "all" ) )>
 		</cfif>
 		
@@ -95,7 +95,7 @@ EXCLUDE
 	</cfcase>
 	
 	<cfdefaultcase><!---phone--->
-		<cfif arguments.mutable>
+		<cfif arguments.autofix>
 			<cfset LOCAL.value = reReplaceNoCase( LOCAL.value, "[^0-9|#arguments.divider#]", "", "all" )>
 		</cfif>
 		

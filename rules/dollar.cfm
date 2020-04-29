@@ -1,7 +1,7 @@
 <cfparam name="arguments.dollarSign" type="boolean" default="true">
 <cfparam name="arguments.allowNegative" type="boolean" default="true">
 
-<cfif arguments.autoFix AND arguments.mutable>
+<cfif arguments.autoFix>
 	<cfset LOCAL.value = trim( reReplace( LOCAL.value, "[^0-9.\$-]", "", "all" ) )>
 </cfif>
 
@@ -15,9 +15,7 @@
 <cfset LOCAL.regex = "^" & LOCAL.regex>
 
 <cfif NOT reFindNoCase( LOCAL.regex, LOCAL.value )>
-	<cfif arguments.mutable AND NOT arguments.autoFix>
-		<cfset LOCAL.value = reReplace( LOCAL.value, "[^0-9.\$-]", "", "all" )>
-	</cfif>
+	<cfset LOCAL.value = reReplace( LOCAL.value, "[^0-9.\$-]", "", "all" )>
 	<cfif arguments.dollarSign>
 		<cfset LOCAL.error = "{label} must be a valid dollar value, like $132.45">
 	<cfelse>

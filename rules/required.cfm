@@ -5,10 +5,8 @@
 		<cfset LOCAL.error = "{label} is a required field that was skipped.">
 	<cfelse>
 		<cfset LOCAL.error = "stop">
-		<cfif arguments.mutable>
-			<!--- stop prevents further rules from processing but doesn't generate an error --->
-			<cfset LOCAL.value = arguments.defaultValue>
-		</cfif>
+		<!--- stop prevents further rules from processing but doesn't generate an error --->
+		<cfset LOCAL.value = arguments.defaultValue>
 	</cfif>
 	<!--- give the variable a default if it doesn't exist or if its null --->
 <cfelseif isNull( LOCAL.scope[ arguments.var ] )>
@@ -18,16 +16,14 @@
 	<cfelse>
 		<cfset LOCAL.error = "stop">
 		<!--- set the value to the default if its not required --->
-		<cfif arguments.mutable>
-			<!--- stop prevents further rules from processing but doesn't generate an error --->
-			<cfset LOCAL.value = arguments.defaultValue>
-		</cfif>
+		<!--- stop prevents further rules from processing but doesn't generate an error --->
+		<cfset LOCAL.value = arguments.defaultValue>
 	</cfif>
 <cfelse><!--- defined --->
 	<cfset LOCAL.value = LOCAL.scope[ arguments.var ]>
 	<cfif isSimpleValue( LOCAL.value )>
 		<!--- trim space --->
-		<cfif arguments.autoFix AND arguments.mutable>
+		<cfif arguments.autoFix>
 			<cfset LOCAL.value = trim( LOCAL.value )>
 		</cfif>
 		<!--- ensure required field has value --->
@@ -36,10 +32,8 @@
 				<cfset LOCAL.error = "{label} is a required field that was skipped.">
 			<cfelse>
 				<cfset LOCAL.error = "stop">
-				<cfif arguments.mutable>
-					<!--- stop prevents further rules from processing but doesn't generate an error --->
-					<cfset LOCAL.value = arguments.defaultValue>
-				</cfif>
+				<!--- stop prevents further rules from processing but doesn't generate an error --->
+				<cfset LOCAL.value = arguments.defaultValue>
 			</cfif>
 		</cfif>
 	<cfelseif isArray( LOCAL.value )>
@@ -49,10 +43,8 @@
 				<cfset LOCAL.error = "{label} is a required field that was skipped.">
 			<cfelse>
 				<cfset LOCAL.error = "stop">
-				<cfif arguments.mutable>
-					<!--- stop prevents further rules from processing but doesn't generate an error --->
-					<cfset LOCAL.value = arguments.defaultValue>
-				</cfif>
+				<!--- stop prevents further rules from processing but doesn't generate an error --->
+				<cfset LOCAL.value = arguments.defaultValue>
 			</cfif>
 		</cfif>
 	<cfelseif isStruct( LOCAL.value )>
@@ -62,10 +54,8 @@
 				<cfset LOCAL.error = "{label} is a required field that was skipped.">
 			<cfelse>
 				<cfset LOCAL.error = "stop">
-				<cfif arguments.mutable>
-					<!--- stop prevents further rules from processing but doesn't generate an error --->
-					<cfset LOCAL.value = arguments.defaultValue>
-				</cfif>
+				<!--- stop prevents further rules from processing but doesn't generate an error --->
+				<cfset LOCAL.value = arguments.defaultValue>
 			</cfif>
 		</cfif>
 	</cfif>

@@ -1,6 +1,6 @@
 <cfparam name="arguments.parseDate" type="boolean" default="false">
 
-<cfif arguments.parseDate AND arguments.mutable>
+<cfif arguments.parseDate>
 	<cfset LOCAL.value = parseDateTime( LOCAL.value )>
 </cfif>
 

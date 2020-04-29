@@ -1,5 +1,5 @@
 <cfif NOT len( LOCAL.value )>
-	<cfif arguments.mutable AND arguments.autoFix>
+	<cfif arguments.autoFix>
 		<cfset LOCAL.value = arguments.defaultValue>
 	</cfif>
 	<cfif arguments.required>

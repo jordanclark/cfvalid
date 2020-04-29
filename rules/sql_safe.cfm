@@ -4,9 +4,7 @@
 <cfif listFindNoCase( arguments.sqlSafe, "keywords" )>
 	<cfloop index="LOCAL.word" list="#arguments.sqlKeywords#" delimiters=",">
 		<cfif reFindNoCase( "\b#LOCAL.word#\b", LOCAL.value )>
-			<cfif arguments.mutable>
-				<cfset LOCAL.value = "">
-			</cfif>
+			<cfset LOCAL.value = "">
 			<cfset LOCAL.error = "{label} contained the restricted word ""#LOCAL.word#"", please retry.">
 			<cfbreak>
 		</cfif>
@@ -15,14 +13,12 @@
 
 <cfif listFindNoCase( arguments.sqlSafe, "functions" )>
 	<cfif find( "(", LOCAL.value ) OR find( ")", LOCAL.value )>
-		<cfif arguments.mutable>
-			<cfset LOCAL.value = "">
-		</cfif>
+		<cfset LOCAL.value = "">
 		<cfset LOCAL.error = "{label} contained the restricted characters, please retry.">
 	</cfif>
 </cfif>
 
-<cfif ( listFindNoCase( arguments.sqlSafe, "escape" ) OR arguments.autoFix ) AND arguments.mutable>
+<cfif ( listFindNoCase( arguments.sqlSafe, "escape" ) OR arguments.autoFix )>
 	<cfset LOCAL.value = replace( LOCAL.value, "'", "&##39", "all" )>
 	<!---<cfset LOCAL.value = replace( LOCAL.value, "'", "''", "all" )>--->
 	<cfset LOCAL.value = replaceList( LOCAL.value, "--,/*,*/", "" )>

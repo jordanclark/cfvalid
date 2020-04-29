@@ -3,6 +3,4 @@
 	<cfset arguments.mask = "YYYY-MM-DD">
 </cfif>
 
-<cfif arguments.mutable>
-	<cfset LOCAL.value = dateFormat( LOCAL.value, arguments.mask )>
-</cfif>
+<cfset LOCAL.value = dateFormat( LOCAL.value, arguments.mask )>

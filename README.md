@@ -24,6 +24,7 @@ values, and if the result is valid no error is thrown.
 * `scope=struct` - the structure holding the variable, useful for custom scopes, otherwise use the form/url/cookie convenience methods
 * `label=string` - field name to display in error messages
 * `autoFix=bool` - some rules may attempt to auto fix input to be valid
+* `mutable=bool` - if rules can update the original variable
 * `throwable=bool` - defaults to false, this will make any validation error throw a cfthrow exception that can be caught by error handling
 ```
 valid.param( scope=form, var="test", rule="length:1-10" );
@@ -110,6 +111,13 @@ Place new rules in the /rules folder (or add another folder to the init "rulePat
 Run the following from commandbox:
 `box install cfvalid`
 
+## Run Tests
+Install testbox
+`box install`
+`box testbox run`
+
+
 ## Changes
+* 2020-04-29 Testbox BDD Specs
 * 2020-04-24 Docs and some fixes
 * 2019-06-03 Open source release

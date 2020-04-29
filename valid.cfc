@@ -4,20 +4,28 @@ component {
 	 * Init
 	 *
 	 * @rulePaths include path to include rules from 1 or more directors (semicolon delimited)
-	 * @errorStruct var name of struct where error messages are put from validate() type functions
-	 * @validVar var name of bool which indicates a validation error
+	 * @defaultErrorStruct var name of struct where error messages are put from validate() type functions
+	 * @defaultValidVar var name of bool which indicates a validation error
+	 * @defaultLink if error messages should link to the form field
+	 * @defaultValue default value if the variable is undefined, usually ""
+	 * @defaultOnError if an error occurs in a rule, then should it set the default value
+	 * @defaultParamRequired 
+	 * @defaultIsValidRequired 
+	 * @defaultValidateRequired 
+	 * @defaultMutable 
+	 * @defaultCookieMutable 
+	 * @defaultIsValidAutoFix 
+	 * @defaultAutoFix 
+	 * @defaultThrowable 
+	 * @defaultErrorClass 
 	 * @prefixLabel if the field label should be prefixed to error messages
 	 * @sentence if error messages should be sentences
-	 * @link if error messages should link to the form field
 	 * @throwType the custom type of throwable errors
-	 * @defaults default values used for most validation functions
 	 */
 	function init(
 		string rulePaths= "./rules"
 	,	string defaultErrorStruct= "request.errors"
 	,	string defaultValidVar= "request.isValid"
-	,	boolean prefixLabel= true
-	,	boolean sentence= true
 	,	boolean defaultLink= true
 	,	defaultValue= ""
 	,	boolean defaultOnError= true
@@ -30,6 +38,8 @@ component {
 	,	boolean defaultAutoFix= true
 	,	boolean defaultThrowable= false
 	,	string defaultErrorClass= "Error"
+	,	boolean prefixLabel= true
+	,	boolean sentence= true
 	,	string throwType= "Custom.Input.Validation"
 	) {
 		structAppend( this, arguments );

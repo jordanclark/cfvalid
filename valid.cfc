@@ -3,7 +3,7 @@ component {
 	/**
 	 * Init
 	 *
-	 * @rulePaths include path to include rules from 1 or more directors
+	 * @rulePaths include path to include rules from 1 or more directors (semicolon delimited)
 	 * @errorStruct var name of struct where error messages are put from validate() type functions
 	 * @validVar var name of bool which indicates a validation error
 	 * @prefixLabel if the field label should be prefixed to error messages
@@ -14,40 +14,32 @@ component {
 	 */
 	function init(
 		string rulePaths= "./rules"
-	,	string errorStruct= "request.errors"
-	,	string validVar= "request.isValid"
+	,	string defaultErrorStruct= "request.errors"
+	,	string defaultValidVar= "request.isValid"
 	,	boolean prefixLabel= true
 	,	boolean sentence= true
-	,	boolean link= true
+	,	boolean defaultLink= true
+	,	defaultValue= ""
+	,	boolean defaultOnError= true
+	,	boolean defaultParamRequired= false
+	,	boolean defaultIsValidRequired= true
+	,	boolean defaultValidateRequired= true
+	,	boolean defaultMutable= true
+	,	boolean defaultCookieMutable= false
+	,	boolean defaultIsValidAutoFix= true
+	,	boolean defaultAutoFix= true
+	,	boolean defaultThrowable= false
+	,	string defaultErrorClass= "Error"
 	,	string throwType= "Custom.Input.Validation"
-	,	struct defaults= {}
 	) {
-		this.rulePaths= arguments.rulePaths;
-		this.errorStruct= arguments.errorStruct;
-		this.throwType= arguments.throwType;
-		structAppend( arguments.defaults, {
-			required= true
-		,	mutable= true
-		,	autoFix= false
-		,	defaultValue= ""
-		,	defaultOnError= true
-		,	throwable= false
-		,	link= arguments.link
-		,	errorClass= "Error"
-		,	validVar= arguments.validVar
-		,	prefixLabel= arguments.prefixLabel
-		,	sentence= arguments.sentence
-		,	errorStruct= arguments.errorStruct
-		,	message= "is a required field that was skipped"
-		}, false );
-		this.defaults= arguments.defaults;
+		structAppend( this, arguments );
 		this.comboRules= {};
 		this.pathCache= {};
 		return this;
 	}
 
 	function debugLog(required input) {
-		if( structKeyExists( request, "log" ) && isCustomFunction( request.log ) ) {
+		if( isCustomFunction( request.log ?: 0 ) ) {
 			if( isSimpleValue( arguments.input ) ) {
 				request.log( "valid.cfc: " & arguments.input );
 			} else {
@@ -91,7 +83,7 @@ component {
 	 * @validVar var name
 	 * @errorStruct var name
 	 */
-	boolean function anyErrors(string validVar= this.defaults.validVar, errorStruct= this.defaults.errorStruct) {
+	boolean function anyErrors( string validVar= this.defaultValidVar, errorStruct= this.defaultErrorStruct ) {
 		LOCAL.bError= false;
 		if( len( arguments.validVar ) && evaluate( arguments.validVar ) == false ) {
 			LOCAL.bError= true;
@@ -110,7 +102,7 @@ component {
 	 * @vars 
 	 * @errorStruct 
 	 */
-	boolean function hadError(required string vars, errorStruct= this.defaults.errorStruct) {
+	boolean function hadError( required string vars, errorStruct= this.defaultErrorStruct ) {
 		LOCAL.bError= false;
 		LOCAL.errorStruct= ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct );
 		for( LOCAL.var in listToArray( arguments.vars, ",; " ) ) {
@@ -123,11 +115,11 @@ component {
 		return LOCAL.bError;
 	}
 
-	function clearErrors(errorStruct= this.defaults.errorStruct) {
+	function clearErrors( errorStruct= this.defaultErrorStruct ) {
 		return structClear( ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct ) );
 	}
 
-	function addComboRule(required string name, required string rules) {
+	function addComboRule( required string name, required string rules ) {
 		var n= arguments.name;
 		structDelete( arguments, "name" );
 		this.comboRules[ n ]= arguments;
@@ -138,19 +130,17 @@ component {
 		required struct scope
 	,	required string var
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= true
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	boolean throwable= false
-	,	string errorClass= this.defaults.errorClass
+	,	boolean required= this.defaultIsValidRequired
+	,	boolean autoFix= this.defaultIsValidAutoFix
 	) {
-		arguments.throwable= false;
 		arguments.errorStruct= {};
+		arguments.mutable= false;
 		arguments.validVar= "";
 		arguments.label= "";
+		arguments.errorClass= "";
+		arguments.link= false;
+		arguments.throwable= false;
+		arguments.defaultOnError= false;
 		var v= this.validate( argumentCollection= arguments );
 		return v.isValid;
 	}
@@ -159,21 +149,17 @@ component {
 		required struct scope
 	,	required string var
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	boolean throwable= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
-		if( !listFindNoCase( arguments.rules, "simple" ) ) {
-			arguments.rules= listPrepend( arguments.rules, "simple" );
-		}
+		arguments.errorClass= "";
 		var v= this.validate( argumentCollection= arguments );
 		return v.value;
 	}
@@ -182,21 +168,17 @@ component {
 		required struct scope
 	,	required string vars
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	boolean throwable= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
-		if( !listFindNoCase( arguments.rules, "simple" ) ) {
-			arguments.rules= listPrepend( arguments.rules, "simple" );
-		}
+		arguments.errorClass= "";
 		if( find( ",", arguments.vars ) ) {
 			for( arguments.var in listToArray( arguments.vars, ",;" ) ) {
 				this.validate( argumentCollection= arguments );
@@ -213,16 +195,16 @@ component {
 	,	required string var
 	,	string label= arguments.var
 	,	required string rules
-	,	defaultValue= this.defaults.defaultValue
-	,	boolean required= this.defaults.required
-	,	boolean autoFix= this.defaults.autoFix
-	,	boolean mutable= this.defaults.mutable
-	,	boolean defaultOnError= this.defaults.defaultOnError
-	,	boolean link= this.defaults.link
-	,	boolean throwable= this.defaults.throwable
-	,	string errorClass= this.defaults.errorClass
-	,	errorStruct= this.defaults.errorStruct
-	,	string validVar= this.defaults.validVar
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.required
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	boolean link= this.defaultLink
+	,	boolean throwable= this.defaultThrowable
+	,	string errorClass= this.defaultErrorClass
+	,	errorStruct= this.defaultErrorStruct
+	,	string validVar= this.defaultValidVar
 	,	string error
 	) {
 		arguments.rules= listPrepend( arguments.rules, "required" );
@@ -291,7 +273,7 @@ component {
 					if( arguments.mutable ) {
 						LOCAL.scope[ arguments.var ]= LOCAL.value;
 					}
-					throw( message= LOCAL.errorMsg, detail= LOCAL.error, type= "Custom.Input.Validation" );
+					throw( message= LOCAL.errorMsg, detail= LOCAL.error, type= this.throwType );
 				}
 				// end the loop 
 				break;
@@ -319,10 +301,11 @@ component {
 		required string var
 	,	required string error
 	,	string label= ""
-	,	boolean link= this.defaults.link
-	,	string errorClass= this.defaults.errorClass
-	,	errorStruct= this.defaults.errorStruct
-	,	string validVar= this.defaults.validVar
+	,	boolean link= this.defaultLink
+	,	boolean throwable= this.defaultThrowable
+	,	string errorClass= this.defaultErrorClass
+	,	errorStruct= this.defaultErrorStruct
+	,	string validVar= this.defaultValidVar
 	) {
 		arguments.errorStruct= ( isSimpleValue( arguments.errorStruct ) ? evaluate( arguments.errorStruct ) : arguments.errorStruct );
 		arguments.errorMsg= "";
@@ -342,23 +325,10 @@ component {
 			"#arguments.validVar#"= false;
 			this.debugLog( "#arguments.validVar#= false" );
 		}
-		return arguments;
-	}
-
-	function throwError(
-		required string var
-	,	required string error
-	,	string label= ""
-	,	boolean link= this.defaults.link
-	,	string errorClass= this.defaults.errorClass
-	) {
-		var errorMsg= "";
-		if( !len( arguments.label ) ) {
-			errorMsg= arguments.error;
-		} else {
-			errorMsg= this.formatErrorMessage( arguments.error, arguments.label, arguments.errorClass, arguments.link, arguments.var );
+		if( arguments.throwable ) {
+			throw( message= arguments.errorMsg, type= this.throwType );
 		}
-		throw( message= errorMsg, type= "Custom.Input.Validation" );
+		return arguments;
 	}
 
 	string function formatErrorMessage(
@@ -368,7 +338,7 @@ component {
 	,	boolean link= false
 	,	string var= ""
 	) {
-		if( this.defaults.prefixLabel ) {
+		if( this.prefixLabel ) {
 			if( !find( "{label}", arguments.message ) ) {
 				arguments.message= "{label} " & arguments.message;
 			}
@@ -380,7 +350,7 @@ component {
 		} else {
 			arguments.message= trim( replace( arguments.message, "{label}", "", "all" ) );
 		}
-		if( this.defaults.sentence && right( arguments.message, 1 ) != "." && right( arguments.message, 1 ) != "!" ) {
+		if( this.sentence && right( arguments.message, 1 ) != "." && right( arguments.message, 1 ) != "!" ) {
 			arguments.message &= ".";
 		}
 		return arguments.message;
@@ -394,15 +364,15 @@ component {
 		string var= "submit"
 	,	string rules= ""
 	,	defaultValue= false
-	,	string errorClass= this.defaults.errorClass
+	,	string errorClass= this.defaultErrorClass
 	) {
 		arguments.scope= "FORM";
+		arguments.errorStruct= {};
 		arguments.throwable= false;
 		arguments.required= false;
 		arguments.autoFix= true;
 		arguments.mutable= true;
 		arguments.link= false;
-		arguments.errorStruct= {};
 		arguments.rules= listPrepend( arguments.rules, "simple,submitted" );
 		arguments.validVar= "";
 		if( cgi[ 'request_method' ] == "POST" ) {
@@ -419,19 +389,18 @@ component {
 	boolean function isFormValid(
 		required string var
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= true
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
+	,	boolean required= this.defaultIsValidRequired
+	,	boolean autoFix= this.defaultIsValidAutoFix
 	) {
 		arguments.scope= "FORM";
-		arguments.throwable= false;
 		arguments.errorStruct= {};
+		arguments.mutable= false;
 		arguments.validVar= "";
 		arguments.label= "";
+		arguments.errorClass= "";
+		arguments.link= false;
+		arguments.throwable= false;
+		arguments.defaultOnError= false;
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -443,18 +412,18 @@ component {
 	function formParam(
 		required string var
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
 		arguments.scope= "FORM";
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
+		arguments.errorClass= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -468,18 +437,18 @@ component {
 	function formParams(
 		required string vars
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
 		arguments.scope= "FORM";
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
+		arguments.errorClass= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -500,22 +469,22 @@ component {
 	function formQueryParams(
 		required string vars
 	,	string rules= ""
-	,	string defaultValue= ""
+	,	string defaultValue= this.defaultValue
 	,	query query
 	,	struct defaults= {}
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
 		var standardDefault= arguments.defaultValue;
 		arguments.hasQuery= ( structKeyExists( arguments, "query" ) && arguments.query.recordCount );
 		arguments.scope= "FORM";
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
+		arguments.errorClass= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -540,14 +509,14 @@ component {
 		required string var
 	,	string label= arguments.var
 	,	string rules= ""
-	,	defaultValue= this.defaults.defaultValue
-	,	boolean required= true
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= this.defaults.link
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultValidateRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	boolean link= this.defaultLink
+	,	string errorClass= this.defaultErrorClass
+	,	string validVar= this.defaultValidVar
 	,	string error
 	) {
 		arguments.scope= "FORM";
@@ -565,19 +534,18 @@ component {
 	boolean function isUrlValid(
 		required string var
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= true
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
+	,	boolean required= this.defaultIsValidRequired
+	,	boolean autoFix= this.defaultIsValidAutoFix
 	) {
 		arguments.scope= "URL";
-		arguments.throwable= false;
 		arguments.errorStruct= {};
+		arguments.mutable= false;
 		arguments.validVar= "";
 		arguments.label= "";
+		arguments.errorClass= "";
+		arguments.link= false;
+		arguments.throwable= false;
+		arguments.defaultOnError= false;
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -588,18 +556,18 @@ component {
 	function urlParam(
 		required string var
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
 		arguments.scope= "URL";
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
+		arguments.errorClass= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -613,18 +581,18 @@ component {
 	function urlParams(
 		required string vars
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
 		arguments.scope= "URL";
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
+		arguments.errorClass= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -646,14 +614,14 @@ component {
 		required string var
 	,	string label= arguments.var
 	,	string rules= ""
-	,	defaultValue= this.defaults.defaultValue
-	,	boolean required= true
-	,	boolean autoFix= true
-	,	boolean mutable= true
-	,	boolean defaultOnError= true
-	,	boolean link= this.defaults.link
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultValidateRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	boolean link= this.defaultLink
+	,	string errorClass= this.defaultErrorClass
+	,	string validVar= this.defaultValidVar
 	,	string error
 	) {
 		arguments.scope= "URL";
@@ -671,19 +639,18 @@ component {
 	boolean function isCookieValid(
 		required string var
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= true
-	,	boolean autoFix= true
-	,	boolean mutable= false
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
+	,	boolean required= this.defaultIsValidRequired
+	,	boolean autoFix= this.defaultIsValidAutoFix
 	) {
 		arguments.scope= "COOKIE";
-		arguments.throwable= false;
 		arguments.errorStruct= {};
+		arguments.mutable= false;
 		arguments.validVar= "";
 		arguments.label= "";
+		arguments.errorClass= "";
+		arguments.link= false;
+		arguments.throwable= false;
+		arguments.defaultOnError= false;
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -694,21 +661,21 @@ component {
 	function cookieParam(
 		required string var
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= false
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultCookieMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
 		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
 		arguments.scope= "COOKIE";
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
+		arguments.errorClass= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -719,21 +686,21 @@ component {
 	function cookieParams(
 		required string vars
 	,	string rules= ""
-	,	defaultValue= ""
-	,	boolean required= false
-	,	boolean autoFix= true
-	,	boolean mutable= false
-	,	boolean defaultOnError= true
-	,	boolean link= false
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
-	,	struct errorStruct= {}
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultParamRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultCookieMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	string validVar= this.defaultValidVar
 	) {
 		if( !arguments.required ) {
 			arguments.validVar= "";
 		}
 		arguments.scope= "COOKIE";
+		arguments.errorStruct= {};
+		arguments.link= false;
 		arguments.throwable= false;
+		arguments.errorClass= "";
 		if( !listFindNoCase( arguments.rules, "simple" ) ) {
 			arguments.rules= listPrepend( arguments.rules, "simple" );
 		}
@@ -752,14 +719,14 @@ component {
 		required string var
 	,	string label= arguments.var
 	,	string rules= ""
-	,	defaultValue= this.defaults.defaultValue
-	,	boolean required= true
-	,	boolean autoFix= true
-	,	boolean mutable= false
-	,	boolean defaultOnError= true
-	,	boolean link= this.defaults.link
-	,	string errorClass= this.defaults.errorClass
-	,	string validVar= this.defaults.validVar
+	,	defaultValue= this.defaultValue
+	,	boolean required= this.defaultValidateRequired
+	,	boolean autoFix= this.defaultAutoFix
+	,	boolean mutable= this.defaultCookieMutable
+	,	boolean defaultOnError= this.defaultOnError
+	,	boolean link= this.defaultLink
+	,	string errorClass= this.defaultErrorClass
+	,	string validVar= this.defaultValidVar
 	,	string error
 	) {
 		arguments.scope= "COOKIE";

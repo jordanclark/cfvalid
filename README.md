@@ -109,13 +109,16 @@ Place new rules in the /rules folder (or add another folder to the init "rulePat
 
 ## To Install
 Run the following from commandbox:
-`box install cfvalid`
+```
+box install cfvalid
+```
 
 ## Run Tests
 Install testbox
-`box install`
-`box testbox run`
-
+```
+box install
+box testbox run
+```
 
 ## Changes
 * 2020-04-29 Testbox BDD Specs

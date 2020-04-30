@@ -1,0 +1,52 @@
+language: java
+dist: trusty
+sudo: required
+
+env:
+  # Fill out these global variables for build process
+  global:
+    - MODULE_ID=cfvalid
+  matrix:
+    - ENGINE=lucee@5
+    - ENGINE=adobe@2016
+    - ENGINE=adobe@2018
+
+branches:
+  only:
+  - development
+  - master
+
+before_install:
+  # CommandBox Keys
+  - curl -fsSl https://downloads.ortussolutions.com/debs/gpg | sudo apt-key add -
+  - sudo echo "deb http://downloads.ortussolutions.com/debs/noarch /" | sudo tee -a
+    /etc/apt/sources.list.d/commandbox.list
+
+install:
+  # Install Commandbox
+  - sudo apt-get update && sudo apt-get --assume-yes install rsync jq commandbox
+  # Install CommandBox Supporting Librarires
+  - box install commandbox-cfconfig,commandbox-dotenv
+  # If using auto-publish, you will need to provide your API token with this line:
+  # - box config set endpoints.forgebox.APIToken=$FORGEBOX_API_TOKEN > /dev/null
+  # install testbox and dependancies
+  - box install
+
+script:
+  # Set Current Version
+  - TARGET_VERSION=`cat $TRAVIS_BUILD_DIR/box.json | jq '.version' -r`
+  - echo "Starting build for ${MODULE_ID} v${TARGET_VERSION}"
+  # Replace version so builder can issue it
+  # - box package set version=@build.version@+@build.number@
+  # - box install
+  # run our matrix server
+  # - box server start serverConfigFile="server-${ENGINE}.json"
+  - box server start cfengine=$ENGINE port=8500 openbrowser=false
+  # Startup the app
+  - box testbox run
+
+after_failure:
+  # Display the contents of our root directory
+  # Spit out our Commandbox log in case we need to debug
+  - box server log server-${ENGINE}.json
+  - cat `box system-log`

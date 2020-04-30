@@ -37,5 +37,15 @@
     },
     "devDependencies":{
         "testbox":"^4.0"
+	},
+    "testbox" :{
+        "runner" : [
+            { "default": "http://localhost:8500/tests/runner.cfm" }
+        ],
+        "directory" : "tests.specs",
+        "recurse" : true,
+        "verbose" : true,
+        "watchDelay" : 500,
+        "watchPaths" : "**.cfc"
     }
 }

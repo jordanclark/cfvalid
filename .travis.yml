@@ -1,7 +1,5 @@
 language: java
 dist: trusty
-os:
-	- linux
 
 env:
   # Fill out these global variables for build process

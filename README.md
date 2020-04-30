@@ -121,6 +121,7 @@ box testbox run
 ```
 
 ## Changes
+* 2020-04-30 Travis multi-engine test support
 * 2020-04-29 Testbox BDD Specs
 * 2020-04-24 Docs and some fixes
 * 2019-06-03 Open source release

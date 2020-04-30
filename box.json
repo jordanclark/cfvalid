@@ -1,14 +1,14 @@
 {
     "name":"cfvalid",
     "slug":"cfvalid",
-    "version":"1.0.1",
+    "version":"1.0.2",
     "author":"Jordan Clark <jordanclark@gmail.com>",
     "keywords":[
         "input validation"
     ],
     "shortDescription":"Input validation made awesome",
     "type":"modules",
-    "location":"jordanclark/cfvalid#v1.0.1",
+    "location":"jordanclark/cfvalid#v1.0.2",
     "repository":{
         "URL":"https://github.com/jordanclark/cfvalid.git",
         "type":"GIT"
@@ -37,15 +37,17 @@
     },
     "devDependencies":{
         "testbox":"^4.0"
-	},
-    "testbox" :{
-        "runner" : [
-            { "default": "http://localhost:8500/tests/runner.cfm" }
+    },
+    "testbox":{
+        "runner":[
+            {
+                "default":"http://localhost:8500/tests/runner.cfm"
+            }
         ],
-        "directory" : "tests.specs",
-        "recurse" : true,
-        "verbose" : true,
-        "watchDelay" : 500,
-        "watchPaths" : "**.cfc"
+        "directory":"tests.specs",
+        "recurse":true,
+        "verbose":true,
+        "watchDelay":500,
+        "watchPaths":"**.cfc"
     }
 }

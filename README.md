@@ -7,7 +7,7 @@
                                      
 ```
 [![Build Status](https://travis-ci.com/jordanclark/cfvalid.svg?branch=master)](https://travis-ci.com/jordanclark/cfvalid)
-* 2020-04-29 Testbox BDD Specs
+
 # cfvalid
 CF Input validation made awesome! (and safe)
 

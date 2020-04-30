@@ -385,10 +385,10 @@ component {
 		arguments.link= false;
 		arguments.rules= listPrepend( arguments.rules, "simple,submitted" );
 		arguments.validVar= "";
-		if( cgi[ 'request_method' ] == "POST" ) {
+		if( cgi[ 'request_method' ] IS "POST" ) {
 			arguments.defaultValue= true;
 		}
-		request.log( "METHOD: [#cgi[ 'request_method' ]#] #( cgi.request_method == 'POST' )#" );
+		request.log( "METHOD: [#cgi[ 'request_method' ]#] #( cgi.request_method IS 'POST' )#" );
 		arguments.defaultOnError= true;
 		// request.log( duplicate( cgi ) );
 		// request.log( duplicate( arguments ) );

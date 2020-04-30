@@ -39,7 +39,7 @@ component extends="testbox.system.BaseSpec" {
 				testInput[ "foo1" ] = "exists";
 				// testInput[ "foo2" ] = "exists";
 				testInput[ "foo3" ] = "exists";
-				v.params( testInput, "foo1,foo2,foo3" )
+				v.params( testInput, "foo1,foo2,foo3" );
 				expect( testInput ).toHaveLength( 3 ).toHaveKey( "foo2" );
 			});
 			it("handles passing multiple rules", function(){

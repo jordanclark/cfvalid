@@ -1,6 +1,7 @@
 language: java
 dist: trusty
-sudo: required
+os:
+	- linux
 
 env:
   # Fill out these global variables for build process

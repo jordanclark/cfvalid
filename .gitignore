@@ -1,2 +1,3 @@
 testbox/
 tests/results/*.properties
+server.json

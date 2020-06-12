@@ -206,7 +206,7 @@ component {
 	,	string label= arguments.var
 	,	required string rules
 	,	defaultValue= this.defaultValue
-	,	boolean required= this.required
+	,	boolean required= this.defaultValidateRequired
 	,	boolean autoFix= this.defaultAutoFix
 	,	boolean mutable= this.defaultMutable
 	,	boolean defaultOnError= this.defaultOnError

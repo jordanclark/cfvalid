@@ -388,7 +388,7 @@ component {
 		if( cgi[ 'request_method' ] IS "POST" ) {
 			arguments.defaultValue= true;
 		}
-		request.log( "METHOD: [#cgi[ 'request_method' ]#] #( cgi.request_method IS 'POST' )#" );
+		// request.log( "METHOD: [#cgi[ 'request_method' ]#] #( cgi.request_method IS 'POST' )#" );
 		arguments.defaultOnError= true;
 		// request.log( duplicate( cgi ) );
 		// request.log( duplicate( arguments ) );

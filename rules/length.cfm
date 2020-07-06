@@ -16,6 +16,7 @@
 <cfparam name="arguments.lengthUnits" type="string" default="character">
 <cfparam name="arguments.min" type="string" default="">
 <cfparam name="arguments.max" type="string" default="">
+<cfparam name="arguments.trim" type="boolean" default="#arguments.autoFix#">
 
 <cfif isNumeric( arguments.length )>
 	<cfset arguments.min = "">
@@ -33,7 +34,7 @@
 
 <cfset LOCAL.len = len( LOCAL.value )>
 
-<cfif arguments.autoFix AND len( arguments.max ) AND LOCAL.len GT arguments.max>
+<cfif arguments.trim AND len( arguments.max ) AND LOCAL.len GT arguments.max>
 	<cfset LOCAL.value = left( LOCAL.value, arguments.max )>
 	<cfset LOCAL.len = len( LOCAL.value )>
 </cfif>
